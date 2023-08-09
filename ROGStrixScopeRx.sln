@@ -1,0 +1,37 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.33424.131
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ROGStrixScopeRx.ConsoleApp", "ROGStrixScopeRx.ConsoleApp\ROGStrixScopeRx.ConsoleApp.csproj", "{70C974A9-9577-4830-BB0B-F3960A1DAFD7}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ROGStrixScopeRx.Library", "ROGStrixScopeRx.Library\ROGStrixScopeRx.Library.csproj", "{310512B2-49D8-4262-B6A7-B51B4B6AB5A4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ROGStrixScop.Library.Windows", "ROGStrixScop.Library.Windows\ROGStrixScop.Library.Windows.csproj", "{FF8E3106-F2FE-4636-83C9-D999E5C8BCBC}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{70C974A9-9577-4830-BB0B-F3960A1DAFD7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{70C974A9-9577-4830-BB0B-F3960A1DAFD7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{70C974A9-9577-4830-BB0B-F3960A1DAFD7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{70C974A9-9577-4830-BB0B-F3960A1DAFD7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{310512B2-49D8-4262-B6A7-B51B4B6AB5A4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{310512B2-49D8-4262-B6A7-B51B4B6AB5A4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{310512B2-49D8-4262-B6A7-B51B4B6AB5A4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{310512B2-49D8-4262-B6A7-B51B4B6AB5A4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FF8E3106-F2FE-4636-83C9-D999E5C8BCBC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FF8E3106-F2FE-4636-83C9-D999E5C8BCBC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FF8E3106-F2FE-4636-83C9-D999E5C8BCBC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FF8E3106-F2FE-4636-83C9-D999E5C8BCBC}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {CB70A50E-6FDC-49D5-8554-3EB47C32A2B2}
+	EndGlobalSection
+EndGlobal
