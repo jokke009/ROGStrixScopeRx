@@ -14,19 +14,19 @@ namespace ROGStrixScopeRx.Library.Controllers
 {
     public class FadeService : IHostedService
     {
-        private readonly ILogger<USBService> _logger;
+        private readonly ILogger<FadeService> _logger;
 
         private Timer _timer = null;
 
         private AppSettings _settings;
 
-        private static byte _step = 5;
+        private static byte _step = 1;
         private byte _brightness;
         private bool _countUp = true;
 
         public static byte Step { get => _step; set => _step = value; }
 
-        public FadeService(ILogger<USBService> logger, IOptions<AppSettings> settings)
+        public FadeService(ILogger<FadeService> logger, IOptions<AppSettings> settings)
         {
             _logger = logger;
             _settings = settings.Value;
@@ -36,8 +36,8 @@ namespace ROGStrixScopeRx.Library.Controllers
         {
             _logger.LogInformation("Timer started" + _settings.TickRate);
             _logger.LogInformation("global tickrate loaded : " + InternalDataPool.TickRate);
-            _timer = new Timer(Tick, null, TimeSpan.Zero, TimeSpan.FromMilliseconds(20));
-
+            //_timer = new Timer(Tick, null, TimeSpan.Zero, TimeSpan.FromMilliseconds(20));
+            _timer = new Timer(Tick, null, TimeSpan.Zero, TimeSpan.FromMilliseconds(100));
             return Task.CompletedTask;
         }
 
@@ -66,7 +66,38 @@ namespace ROGStrixScopeRx.Library.Controllers
                 }
             }
 
-            _logger.LogTrace("ActionToBePerformed: " + _brightness);
+            _logger.LogInformation("ActionToBePerformed: " + _brightness);
+
+            InternalDataPool.GlobalIterator = _brightness;
+        }
+
+        private void Cycle(object? state)
+        {
+            if (_countUp)
+            {
+                if (_brightness < 255)
+                {
+                    _brightness = (byte)(_brightness + Step);
+
+                }
+                else
+                {
+                    _countUp = false;
+                }
+            }
+            else
+            {
+                if (_brightness > 0)
+                {
+                    _brightness--;
+                }
+                else
+                {
+                    _countUp = true;
+                }
+            }
+
+            _logger.LogInformation("ActionToBePerformed: " + _brightness);
 
             InternalDataPool.GlobalIterator = _brightness;
         }

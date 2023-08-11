@@ -15,6 +15,7 @@ namespace ROGStrixScopeRx.Library
     {
         private readonly ILogger<InternalDataPool> _logger;
         static string test;
+        static double _volume;
 
         private readonly IConfiguration _configuration;
 
@@ -28,6 +29,7 @@ namespace ROGStrixScopeRx.Library
         
         static int _tickRate;
         public static int TickRate { get => _tickRate; set => _tickRate = value; }
+        public static double Volume { get => _volume; set => _volume = value; }
 
         public InternalDataPool()
         {

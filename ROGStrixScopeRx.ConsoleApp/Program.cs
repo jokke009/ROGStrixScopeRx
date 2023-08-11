@@ -30,9 +30,11 @@ builder.Services
 
     //.AddSingleton(_pool).
     //.AddTransient<IWinService, PerfmonService>()
-    .AddHostedService<PerfmonService>()
-    .AddHostedService<USBService>()
-    .AddHostedService<FadeService>()
+    //.AddHostedService<PerfmonService>()
+
+    .AddHostedService<USBService>().AddLogging()
+    .AddHostedService<VolumeService>()
+    // .AddHostedService<FadeService>().AddLogging()
     .Configure<AppSettings>(options => builder.Configuration.GetSection("Config").Bind(options));
 
 

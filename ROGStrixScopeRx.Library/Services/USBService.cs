@@ -50,6 +50,8 @@ namespace ROGStrixScopeRx.Library.Services
 
             byte i = 0;
             
+            await ClearAllLeds();
+
             while (!stoppingToken.IsCancellationRequested)
             {
                 /*
@@ -68,8 +70,10 @@ namespace ROGStrixScopeRx.Library.Services
                 //_logger.LogInformation("Hello World!" + device.GetProduct() + "v" + device.GetDeviceInfo().VendorId + "p" + device.GetDeviceInfo().ProductId );
 
                 */
-                SetLed(1, Color.FromArgb(255,InternalDataPool.GlobalIterator, InternalDataPool.GlobalIterator, InternalDataPool.GlobalIterator));
-                await Task.Delay(200, stoppingToken);
+                byte vol = (byte)((InternalDataPool.Volume / 100) * 255);
+                _logger.LogDebug($"Vol is: {vol}");
+                SetLed(104, Color.FromArgb(255, vol, 255- vol, 0));
+                await Task.Delay(100, stoppingToken);
             }
         }
 
@@ -135,6 +139,18 @@ namespace ROGStrixScopeRx.Library.Services
                 var test2 = _device.Read(65);
 
             }
+        }
+
+        private async Task ClearAllLeds()
+        {
+            await Task.Run(async () =>
+            {
+                for (byte i = 0; i < 200; i++)
+                {
+                    SetLed(i, Color.FromArgb(255, 0, 0, 0));
+                    await Task.Delay(10);
+                }
+            });
         }
 
         private void ClearResponses()
