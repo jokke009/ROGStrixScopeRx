@@ -15,7 +15,7 @@ using ROGStrixScop.Library.Windows.Producers;
 
 Console.WriteLine("Hello, World!");
 
-InternalDataPool _pool = new InternalDataPool();
+//InternalDataPool _pool = new InternalDataPool();
 
 
 
@@ -30,8 +30,8 @@ builder.Services
 
     //.AddSingleton(_pool).
     //.AddTransient<IWinService, PerfmonService>()
-    //.AddHostedService<PerfmonService>()
-
+    //
+    .AddSingleton<IDatapool, InternalDataPool>()
     .AddHostedService<USBService>().AddLogging()
     .AddHostedService<VolumeService>()
     // .AddHostedService<FadeService>().AddLogging()

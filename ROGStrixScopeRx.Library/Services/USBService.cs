@@ -1,6 +1,7 @@
 ﻿using HidApi;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using ROGStrixScopeRx.Library.Defintions;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -14,9 +15,18 @@ using System.Threading.Tasks;
 
 namespace ROGStrixScopeRx.Library.Services
 {
+
+    /// <summary>
+    /// Consumer class
+    /// </summary>
     public  class USBService : BackgroundService
 {
         private readonly ILogger<USBService> _logger;
+        private readonly IDatapool _data;
+
+
+        private byte _preLevel = 0;
+        private byte _preVol = 0;
 
         State _state = new State();
 
@@ -29,9 +39,10 @@ namespace ROGStrixScopeRx.Library.Services
             public bool IsConnected { get; set; }
         }
 
-        public USBService(ILogger<USBService> logger)
+        public USBService(ILogger<USBService> logger, IDatapool data)
         {
             _logger = logger;
+            _data = data;
             _state.IsConnected = false;
             _logger.LogDebug($"Constructor called, IsConnected: {_state.IsConnected}");
 
@@ -49,7 +60,7 @@ namespace ROGStrixScopeRx.Library.Services
             await Task.Delay(1000, stoppingToken);
 
             byte i = 0;
-            
+            await Splash();
             await ClearAllLeds();
 
             while (!stoppingToken.IsCancellationRequested)
@@ -70,9 +81,35 @@ namespace ROGStrixScopeRx.Library.Services
                 //_logger.LogInformation("Hello World!" + device.GetProduct() + "v" + device.GetDeviceInfo().VendorId + "p" + device.GetDeviceInfo().ProductId );
 
                 */
-                byte vol = (byte)((InternalDataPool.Volume / 100) * 255);
-                _logger.LogDebug($"Vol is: {vol}");
-                SetLed(104, Color.FromArgb(255, vol, 255- vol, 0));
+                byte vol = (byte)(_data.Volume * 255);
+                byte level = (byte)(_data.Level * 255);
+               // _logger.LogInformation($"Vol is: {vol}");
+                //SetLed(ScopeRx.KEY_EN_F12, Color.FromArgb(255, vol, 255- vol, 0));
+
+                if (level != _preLevel)
+                {
+                    if (level > 1)
+                    {
+                        SetLed(ScopeRx.KEY_EN_F9, Color.FromArgb(255, level, 255 - level, 0));
+                    }
+                    else
+                    {
+                        SetLed(ScopeRx.KEY_EN_F9, Color.Black);
+                    }
+                    _preLevel = level;
+                }
+                if (vol != _preVol)
+                {
+                    if (vol > 1)
+                    {
+                        SetLed(ScopeRx.KEY_EN_F12, Color.FromArgb(255, vol, 255 - vol, 0));
+                    }
+                    else
+                    {
+                        SetLed(ScopeRx.KEY_EN_F12, Color.Black);
+                    }
+                    _preVol = vol;
+                }
                 await Task.Delay(100, stoppingToken);
             }
         }
@@ -110,7 +147,7 @@ namespace ROGStrixScopeRx.Library.Services
             }
         }
 
-        private void SetLed(byte key, Color color)
+        private void SetLed(ScopeRx key, Color color)
         {
             if (_state.IsConnected)
             {
@@ -122,7 +159,7 @@ namespace ROGStrixScopeRx.Library.Services
                 buf[3] = 0x01;
                 buf[4] = 0x00;
 
-                buf[5] = key;
+                buf[5] = (byte)key;
                 buf[6] = color.R;
                 buf[7] = color.G;
                 buf[8] = color.B;
@@ -145,9 +182,21 @@ namespace ROGStrixScopeRx.Library.Services
         {
             await Task.Run(async () =>
             {
-                for (byte i = 0; i < 200; i++)
+                foreach(ScopeRx value in Enum.GetValues(typeof(ScopeRx)))
                 {
-                    SetLed(i, Color.FromArgb(255, 0, 0, 0));
+                    SetLed(value, Color.FromArgb(255, 0, 0, 0));
+                    await Task.Delay(10);
+                }
+            });
+        }
+
+        private async Task Splash()
+        {
+            await Task.Run(async () =>
+            {
+                foreach (ScopeRx value in Enum.GetValues(typeof(ScopeRx)))
+                {
+                    SetLed(value, Color.FromArgb(255, 100, 100, 100));
                     await Task.Delay(10);
                 }
             });

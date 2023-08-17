@@ -5,17 +5,19 @@ using ROGStrixScopeRx.Library.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using static ROGStrixScopeRx.Library.Services.USBService;
 
 namespace ROGStrixScopeRx.Library
 {
-    public  class InternalDataPool 
+    public  class InternalDataPool : IDatapool
     {
         private readonly ILogger<InternalDataPool> _logger;
         static string test;
-        static double _volume;
+        static float _volume;
+        static float _level;
 
         private readonly IConfiguration _configuration;
 
@@ -29,10 +31,12 @@ namespace ROGStrixScopeRx.Library
         
         static int _tickRate;
         public static int TickRate { get => _tickRate; set => _tickRate = value; }
-        public static double Volume { get => _volume; set => _volume = value; }
+        public float Volume { get => _volume; set => _volume = value; }
+        public float Level { get => _level; set => _level = value; }
 
-        public InternalDataPool()
+        public InternalDataPool(ILogger<InternalDataPool> logger)
         {
+            _logger = logger;
             Init();
 
         }
