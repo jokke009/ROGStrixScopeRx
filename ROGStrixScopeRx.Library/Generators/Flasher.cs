@@ -46,9 +46,9 @@ namespace ROGStrixScopeRx.Library.Generators
                 }
             }
         
-        public void QueueInstruction()
+        public void QueueInstruction(InstructionBase instr)
         {
-            
+            _pool.
         }
     }
 }
