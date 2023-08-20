@@ -2,6 +2,8 @@
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using ROGStrixScopeRx.Library.Defintions;
+using ROGStrixScopeRx.Library.Generics;
+using ROGStrixScopeRx.Library.Protocol.Messages;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -12,6 +14,7 @@ using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace ROGStrixScopeRx.Library.Services
 {
@@ -19,7 +22,7 @@ namespace ROGStrixScopeRx.Library.Services
     /// <summary>
     /// Consumer class
     /// </summary>
-    public  class USBService : BackgroundService
+    public  class USBService : BackgroundService , ICommunicationService
 {
         private readonly ILogger<USBService> _logger;
         private readonly IDatapool _data;
@@ -33,6 +36,9 @@ namespace ROGStrixScopeRx.Library.Services
         Device _device;
 
         private string _path = "";
+
+        bool ICommunicationService.State { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public int BandWidth { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
         public record State
         {
@@ -139,7 +145,7 @@ namespace ROGStrixScopeRx.Library.Services
                 //_device.Write(test);
                 // var info =  Hid.Enumerate(0x0B05, 0x1951);
 
-                _device.Write(test);
+                _device.Write(test); // do a lock
                 var test2 = _device.Read(64);
 
                 //0       var temp =  _device.Read(65);
@@ -214,6 +220,52 @@ namespace ROGStrixScopeRx.Library.Services
 
         }
 
+        /// <summary>
+        /// Convertes the generic into a concreet for the USB interface
+        /// </summary>
+        /// <param name=""></param>
+        /// <returns></returns>
+        private RxMessageBase Encode(InstructionBase instr)
+        {
 
+            switch (instr)
+            {
+                case InstructionSetLed setled:
+                    RxMessageSetLed rx = new RxMessageSetLed((byte)setled.Address, setled.Red, setled.Green, setled.Blue);
+                    return rx;
+            }
+            
+            return null;
+        }
+
+        public void Open()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Close()
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool LoadSettings()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Write(InstructionBase instruct)
+        {
+            if (instruct != null)
+            {
+                var rx = Encode(instruct);
+                Write(rx);
+            }
+        }
+
+        public void Write(RxMessageBase instruct)
+        {
+            _device.Write(instruct.OutBytes);
+            var test2 = _device.Read(65);
+        }
     }
 }

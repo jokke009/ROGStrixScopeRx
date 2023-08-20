@@ -1,8 +1,10 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using ROGStrixScopeRx.Library.Generics;
 using ROGStrixScopeRx.Library.Model;
 using ROGStrixScopeRx.Library.Services;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -21,8 +23,8 @@ namespace ROGStrixScopeRx.Library
 
         private readonly IConfiguration _configuration;
 
-        
-        
+        private static BlockingCollection<InstructionBase> _bc;
+        public static BlockingCollection<InstructionBase> Bc { get => _bc; set => _bc = value; }
 
         public AppSettings _appSettings { get; private set; }
 
@@ -30,6 +32,8 @@ namespace ROGStrixScopeRx.Library
         public static byte GlobalIterator { get => globalIterator; set => globalIterator = value; }
         
         static int _tickRate;
+        
+
         public static int TickRate { get => _tickRate; set => _tickRate = value; }
         public float Volume { get => _volume; set => _volume = value; }
         public float Level { get => _level; set => _level = value; }
