@@ -10,6 +10,7 @@ using System.ComponentModel;
 using System.Diagnostics.Metrics;
 using System.Drawing;
 using System.Linq;
+using System.Net.Sockets;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 using System.Text;
@@ -283,6 +284,8 @@ namespace ROGStrixScopeRx.Library.Services
         private void SetAll(InstructionSetAllLeds setallled)
         {
             RxMessageSetManyLeds rx = new RxMessageSetManyLeds(setallled.Ledlist);
+
+            for(int x = 0, i < rx.Packets)
         }
     }
 }
