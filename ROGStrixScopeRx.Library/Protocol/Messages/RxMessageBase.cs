@@ -8,7 +8,7 @@ namespace ROGStrixScopeRx.Library.Protocol.Messages
 {
     public abstract class RxMessageBase
     {
-        private byte[] _outBytes;
+        protected byte[] _outBytes;
         private const int _frame_size = 65;
 
         public static int FRAME_SIZE => _frame_size; // used to get the frame size for calculations

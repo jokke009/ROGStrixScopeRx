@@ -10,7 +10,6 @@ namespace ROGStrixScopeRx.Library.Protocol.Messages
 {
     public sealed class RxMessageSetLed : RxMessageBase
     {
-        private byte[] _outBytes;
 
         private RxMessageSetLed() : base()
         {
@@ -31,7 +30,10 @@ namespace ROGStrixScopeRx.Library.Protocol.Messages
 
         public RxMessageSetLed(byte key, Color color)
         {
-            
+            _outBytes[5] = key;
+            _outBytes[6] = color.R;
+            _outBytes[7] = color.G;
+            _outBytes[8] = color.B;
         }
     }
 }

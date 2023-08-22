@@ -233,6 +233,9 @@ namespace ROGStrixScopeRx.Library.Services
                 case InstructionSetLed setled:
                     RxMessageSetLed rx = new RxMessageSetLed((byte)setled.Address, setled.Red, setled.Green, setled.Blue);
                     return rx;
+                case InstructionSetAllLeds setallled:
+                    RxMessageSetLed rx = new RxMessageSetLed((byte)setled.Address, setled.Red, setled.Green, setled.Blue);
+                    return rx;
             }
             
             return null;
@@ -257,7 +260,16 @@ namespace ROGStrixScopeRx.Library.Services
         {
             if (instruct != null)
             {
-                var rx = Encode(instruct);
+                switch (instruct)
+                {
+                    case InstructionSetLed setled:
+                        RxMessageSetLed rx = new RxMessageSetLed((byte)setled.Address, setled.Red, setled.Green, setled.Blue);
+                        return rx;
+                    case InstructionSetAllLeds setallled:
+                        RxMessageSetLed rx = new RxMessageSetLed((byte)setled.Address, setled.Red, setled.Green, setled.Blue);
+                        return rx;
+                }
+
                 Write(rx);
             }
         }
@@ -266,6 +278,11 @@ namespace ROGStrixScopeRx.Library.Services
         {
             _device.Write(instruct.OutBytes);
             var test2 = _device.Read(65);
+        }
+
+        private void SetAll(InstructionSetAllLeds setallled)
+        {
+            RxMessageSetManyLeds rx = new RxMessageSetManyLeds(setallled.Ledlist);
         }
     }
 }
