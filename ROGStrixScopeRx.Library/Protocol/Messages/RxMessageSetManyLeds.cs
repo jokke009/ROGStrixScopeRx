@@ -13,8 +13,10 @@ namespace ROGStrixScopeRx.Library.Protocol.Messages
 
         private byte _remaining;
         private int _packets;
+        private List<RxMessageSetManyLeds> _frames;
 
         public int Packets { get => _packets; set => _packets = value; }
+        public List<RxMessageSetManyLeds> Frames { get => _frames; set => _frames = value; }
 
         private RxMessageSetManyLeds() : base()
         {
@@ -61,7 +63,13 @@ namespace ROGStrixScopeRx.Library.Protocol.Messages
                     _outBytes[j * 4 + 8] = ledlist[i * 15 + j].Item2.B;
                 }
 
+                this.Frames.Add(this);
             }
+        }
+
+        public void GetFrames()
+        {
+
         }
     }
 }

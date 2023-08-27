@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using System.Xml;
 using NAudio;
 using NAudio.CoreAudioApi;
+using ROGStrixScopeRx.Library.Generics;
 
 namespace ROGStrixScop.Library.Windows.Producers
 {
@@ -86,6 +87,14 @@ namespace ROGStrixScop.Library.Windows.Producers
             //_logger.LogInformation($"level: {level}%");
             _dataPool.Level = level;
             
+        }
+
+        public void QueueInstruction(InstructionBase instr)
+        {
+            if (_dataPool.Bc != null)
+            {
+                _dataPool.Bc.Add(instr);
+            }
         }
 
     }

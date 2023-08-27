@@ -28,6 +28,8 @@ namespace ROGStrixScopeRx.Library.Services
         private readonly ILogger<USBService> _logger;
         private readonly IDatapool _data;
 
+        private static CancellationTokenSource _cts;
+
 
         private byte _preLevel = 0;
         private byte _preVol = 0;
@@ -55,6 +57,8 @@ namespace ROGStrixScopeRx.Library.Services
 
             _path = @"\\?\\HID#VID_0B05&PID_1951&MI_01#8&ca448dc&0&0000#{4d1e55b2-f16f-11cf-88cb-001111000030}";
             _device = new Device(_path);
+            _cts = new CancellationTokenSource();
+            
 
         }
         protected async override Task ExecuteAsync(CancellationToken stoppingToken)
@@ -69,6 +73,7 @@ namespace ROGStrixScopeRx.Library.Services
             byte i = 0;
             await Splash();
             await ClearAllLeds();
+            Task t1 = Task.Run(() => NonBlockingConsumer(_cts.Token));
 
             while (!stoppingToken.IsCancellationRequested)
             {
@@ -117,10 +122,42 @@ namespace ROGStrixScopeRx.Library.Services
                     }
                     _preVol = vol;
                 }
-                await Task.Delay(100, stoppingToken);
+                await Task.Delay(500, stoppingToken);
             }
         }
+        public void NonBlockingConsumer(CancellationToken ct)
+        {
+            // IsCompleted == (IsAddingCompleted && Count == 0)
+            var _bc = _data.Bc;
+            while (!_bc.IsCompleted)
+            {
+                InstructionBase nextItem = null;
+                try
+                {
+                    if (!_bc.TryTake(out nextItem, 0, ct))
+                    {
+                       // _logger.LogInformation(" Take Blocked");
+                    }
+                    else
+                    {
+                        _logger.LogInformation(" Take:{0}", nextItem);
+                        Write(nextItem);
+                    }
+                }
 
+                catch (OperationCanceledException)
+                {
+                    _logger.LogInformation("Taking canceled.");
+                    break;
+                }
+
+                // Slow down consumer just a little to cause
+                // collection to fill up faster, and lead to "AddBlocked"
+                Thread.Sleep(50);
+            }
+
+            _logger.LogInformation("\r\nNo more items to take.");
+        }
         private void GetVersion()
         {
             if (_state.IsConnected) 
@@ -221,27 +258,6 @@ namespace ROGStrixScopeRx.Library.Services
 
         }
 
-        /// <summary>
-        /// Convertes the generic into a concreet for the USB interface
-        /// </summary>
-        /// <param name=""></param>
-        /// <returns></returns>
-        private RxMessageBase Encode(InstructionBase instr)
-        {
-
-            switch (instr)
-            {
-                case InstructionSetLed setled:
-                    RxMessageSetLed rx = new RxMessageSetLed((byte)setled.Address, setled.Red, setled.Green, setled.Blue);
-                    return rx;
-                case InstructionSetAllLeds setallled:
-                    RxMessageSetLed rx = new RxMessageSetLed((byte)setled.Address, setled.Red, setled.Green, setled.Blue);
-                    return rx;
-            }
-            
-            return null;
-        }
-
         public void Open()
         {
             throw new NotImplementedException();
@@ -261,14 +277,16 @@ namespace ROGStrixScopeRx.Library.Services
         {
             if (instruct != null)
             {
+                RxMessageBase rx;
                 switch (instruct)
                 {
                     case InstructionSetLed setled:
-                        RxMessageSetLed rx = new RxMessageSetLed((byte)setled.Address, setled.Red, setled.Green, setled.Blue);
-                        return rx;
+                        rx = new RxMessageSetLed((byte)setled.Key, setled.Color);
+                        break;
                     case InstructionSetAllLeds setallled:
-                        RxMessageSetLed rx = new RxMessageSetLed((byte)setled.Address, setled.Red, setled.Green, setled.Blue);
-                        return rx;
+                        rx = new RxMessageSetManyLeds(setallled.Ledlist);
+                        break;
+                        default: throw new NotImplementedException();
                 }
 
                 Write(rx);
@@ -285,7 +303,11 @@ namespace ROGStrixScopeRx.Library.Services
         {
             RxMessageSetManyLeds rx = new RxMessageSetManyLeds(setallled.Ledlist);
 
-            for(int x = 0, i < rx.Packets)
+            for(int i = 0; i < rx.Frames.Count; i++)
+            {
+                _device.Write(rx.OutBytes);
+                var test2 = _device.Read(65);
+            }
         }
     }
 }

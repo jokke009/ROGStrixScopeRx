@@ -14,9 +14,11 @@ namespace ROGStrixScopeRx.Library.Generics
 
         public InstructionSetLed(byte key, Color color) 
         {
-            _key = key; 
-            _color = color;    
+            Key = key; 
+            Color = color;    
         }
 
+        public byte Key { get => _key; set => _key = value; }
+        public Color Color { get => _color; set => _color = value; }
     }
 }

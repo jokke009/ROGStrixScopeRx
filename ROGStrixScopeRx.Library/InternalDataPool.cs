@@ -23,8 +23,8 @@ namespace ROGStrixScopeRx.Library
 
         private readonly IConfiguration _configuration;
 
-        private static BlockingCollection<InstructionBase> _bc;
-        public static BlockingCollection<InstructionBase> Bc { get => _bc; set => _bc = value; }
+        private BlockingCollection<InstructionBase> _bc;
+        public BlockingCollection<InstructionBase> Bc { get => _bc; set => _bc = value; }
 
         public AppSettings _appSettings { get; private set; }
 
@@ -47,6 +47,7 @@ namespace ROGStrixScopeRx.Library
 
         private void Init()
         {
+            Bc = new BlockingCollection<InstructionBase>();
             globalIterator = 0;
         }
 

@@ -12,7 +12,6 @@ namespace ROGStrixScopeRx.Library
     {
         public float Volume { get; set; }
         public float Level { get; set; }
-
-        private static BlockingCollection<InstructionBase> _bc;
+        public BlockingCollection<InstructionBase> Bc { get; set; }
     }
 }

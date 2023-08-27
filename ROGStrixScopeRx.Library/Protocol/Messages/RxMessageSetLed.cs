@@ -28,7 +28,7 @@ namespace ROGStrixScopeRx.Library.Protocol.Messages
         }
 
 
-        public RxMessageSetLed(byte key, Color color)
+        public RxMessageSetLed(byte key, Color color) : this() 
         {
             _outBytes[5] = key;
             _outBytes[6] = color.R;

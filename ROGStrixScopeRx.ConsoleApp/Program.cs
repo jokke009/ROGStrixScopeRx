@@ -8,6 +8,7 @@ using ROGStrixScopeRx.Library;
 using ROGStrixScopeRx.Library.Model;
 using ROGStrixScop.Library.Windows;
 using ROGStrixScop.Library.Windows.Producers;
+using ROGStrixScopeRx.Library.Generators;
 
 
 // See https://aka.ms/new-console-template for more information
@@ -32,8 +33,11 @@ builder.Services
     //.AddTransient<IWinService, PerfmonService>()
     //
     .AddSingleton<IDatapool, InternalDataPool>()
+    .AddHostedService< Flasher>()
     .AddHostedService<USBService>().AddLogging()
-    .AddHostedService<VolumeService>()
+  //  .AddHostedService<VolumeService>()
+    
+    
     // .AddHostedService<FadeService>().AddLogging()
     .Configure<AppSettings>(options => builder.Configuration.GetSection("Config").Bind(options));
 
