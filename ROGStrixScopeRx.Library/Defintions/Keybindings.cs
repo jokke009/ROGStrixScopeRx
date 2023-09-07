@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ROGStrixScopeRx.Library.Defintions
 {
-    public enum ScopeRx
+    public enum ScopeRx : byte
     {
         KEY_EN_ESCAPE = 0x00,
         KEY_EN_BACK_TICK = 0x01,

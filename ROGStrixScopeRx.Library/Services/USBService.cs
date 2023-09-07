@@ -93,35 +93,7 @@ namespace ROGStrixScopeRx.Library.Services
                 //_logger.LogInformation("Hello World!" + device.GetProduct() + "v" + device.GetDeviceInfo().VendorId + "p" + device.GetDeviceInfo().ProductId );
 
                 */
-                byte vol = (byte)(_data.Volume * 255);
-                byte level = (byte)(_data.Level * 255);
-               // _logger.LogInformation($"Vol is: {vol}");
-                //SetLed(ScopeRx.KEY_EN_F12, Color.FromArgb(255, vol, 255- vol, 0));
-
-                if (level != _preLevel)
-                {
-                    if (level > 1)
-                    {
-                        SetLed(ScopeRx.KEY_EN_F9, Color.FromArgb(255, level, 255 - level, 0));
-                    }
-                    else
-                    {
-                        SetLed(ScopeRx.KEY_EN_F9, Color.Black);
-                    }
-                    _preLevel = level;
-                }
-                if (vol != _preVol)
-                {
-                    if (vol > 1)
-                    {
-                        SetLed(ScopeRx.KEY_EN_F12, Color.FromArgb(255, vol, 255 - vol, 0));
-                    }
-                    else
-                    {
-                        SetLed(ScopeRx.KEY_EN_F12, Color.Black);
-                    }
-                    _preVol = vol;
-                }
+               
                 await Task.Delay(500, stoppingToken);
             }
         }
@@ -153,7 +125,7 @@ namespace ROGStrixScopeRx.Library.Services
 
                 // Slow down consumer just a little to cause
                 // collection to fill up faster, and lead to "AddBlocked"
-                Thread.Sleep(50);
+                Thread.Sleep(100);
             }
 
             _logger.LogInformation("\r\nNo more items to take.");
@@ -252,7 +224,7 @@ namespace ROGStrixScopeRx.Library.Services
             byte[] buf = new byte[65];
             while (result > 0)
             {
-               // result = _device.ReadTimeout(65, 0);
+                result = _device.ReadTimeout(65, 0).Length;
             }
 
 
@@ -284,12 +256,13 @@ namespace ROGStrixScopeRx.Library.Services
                         rx = new RxMessageSetLed((byte)setled.Key, setled.Color);
                         break;
                     case InstructionSetAllLeds setallled:
-                        rx = new RxMessageSetManyLeds(setallled.Ledlist);
-                        break;
+                        SetAll(setallled);
+                        return;
+
                         default: throw new NotImplementedException();
                 }
-
                 Write(rx);
+
             }
         }
 
@@ -301,13 +274,19 @@ namespace ROGStrixScopeRx.Library.Services
 
         private void SetAll(InstructionSetAllLeds setallled)
         {
-            RxMessageSetManyLeds rx = new RxMessageSetManyLeds(setallled.Ledlist);
+            RxMessageMultiLedFrame rx = new RxMessageMultiLedFrame(setallled.Ledlist);
 
-            for(int i = 0; i < rx.Frames.Count; i++)
+            for(int i = 0; i < RxMessageMultiLedFrame.Frames.Count; i++)
             {
-                _device.Write(rx.OutBytes);
-                var test2 = _device.Read(65);
+                _device.Write(RxMessageMultiLedFrame.Frames[i].OutBytes);
+                
+
             }
+
+            ClearResponses();
+
+
         }
+
     }
 }

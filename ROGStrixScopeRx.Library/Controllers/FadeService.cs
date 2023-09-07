@@ -34,8 +34,6 @@ namespace ROGStrixScopeRx.Library.Controllers
 
         public Task StartAsync(CancellationToken cancellationToken)
         {
-            _logger.LogInformation("Timer started" + _settings.TickRate);
-            _logger.LogInformation("global tickrate loaded : " + InternalDataPool.TickRate);
             //_timer = new Timer(Tick, null, TimeSpan.Zero, TimeSpan.FromMilliseconds(20));
             _timer = new Timer(Tick, null, TimeSpan.Zero, TimeSpan.FromMilliseconds(100));
             return Task.CompletedTask;

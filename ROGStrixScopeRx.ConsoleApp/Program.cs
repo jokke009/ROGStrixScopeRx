@@ -32,12 +32,14 @@ builder.Services
     //.AddSingleton(_pool).
     //.AddTransient<IWinService, PerfmonService>()
     //
-    .AddSingleton<IDatapool, InternalDataPool>()
-    .AddHostedService< Flasher>()
-    .AddHostedService<USBService>().AddLogging()
-  //  .AddHostedService<VolumeService>()
-    
-    
+      .AddSingleton<IDatapool, InternalDataPool>()
+      .AddHostedService<DataPoolWorker>()
+      .AddHostedService<Flasher>()
+      .AddHostedService<USBService>().AddLogging()
+      //
+     // .AddHostedService<PerfmonService>()
+     // .AddHostedService<VolumeService>()
+
     // .AddHostedService<FadeService>().AddLogging()
     .Configure<AppSettings>(options => builder.Configuration.GetSection("Config").Bind(options));
 

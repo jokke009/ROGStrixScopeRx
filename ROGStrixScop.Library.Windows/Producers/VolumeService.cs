@@ -11,6 +11,7 @@ using System.Xml;
 using NAudio;
 using NAudio.CoreAudioApi;
 using ROGStrixScopeRx.Library.Generics;
+using ROGStrixScopeRx.Library.Model;
 
 namespace ROGStrixScop.Library.Windows.Producers
 {
@@ -74,8 +75,13 @@ namespace ROGStrixScop.Library.Windows.Producers
             //       _defaultPlaybackDevice ??= new CoreAudioController().DefaultPlaybackDevice;
             //     double vol = _defaultPlaybackDevice.Volume;
             //      var test = _defaultPlaybackDevice.PeakValueChanged;
-            _dataPool.Volume = device.AudioEndpointVolume.MasterVolumeLevelScalar;
-           _logger.LogInformation($"VolSetting: {_dataPool.Volume}%");
+            var volume = device.AudioEndpointVolume.MasterVolumeLevelScalar;
+            var volReporters = _dataPool.Reporters.Values.OfType<VolumeReporter>();
+            foreach ( var volReporter in volReporters )
+            {
+                volReporter.RawValue = volume;
+            }
+           //_logger.LogInformation($"VolSetting: {volume}%");
 
 
         }
@@ -85,17 +91,15 @@ namespace ROGStrixScop.Library.Windows.Producers
            // device.AudioEndpointVolume.MasterVolumeLevel
             var level = device.AudioMeterInformation.MasterPeakValue;
             //_logger.LogInformation($"level: {level}%");
-            _dataPool.Level = level;
-            
+            var levelReporters = _dataPool.Reporters.Values.OfType<LevelReporter>();
+            foreach (var reporter in levelReporters)
+            {
+                reporter.RawValue = level;
+            }
+
         }
 
-        public void QueueInstruction(InstructionBase instr)
-        {
-            if (_dataPool.Bc != null)
-            {
-                _dataPool.Bc.Add(instr);
-            }
-        }
+
 
     }
 }

@@ -18,8 +18,8 @@ namespace ROGStrixScopeRx.Library.Generators
     {
 
 
-        private int _onTime = 100;
-        private int _offTime = 300;
+        private int _onTime = 200;
+        private int _offTime = 200;
 
         private readonly IDatapool _pool;
         private readonly ILogger _logger;
@@ -30,28 +30,7 @@ namespace ROGStrixScopeRx.Library.Generators
             _logger = logger;
         }
 
-
-
-        public async Task ScanTask(CancellationToken token)
-        {
-
-
-            while (true)
-            {
-                   // RxMessageSetLed msg = new RxMessageSetLed(((byte)ScopeRx.KEY_EN_ESCAPE), Color.White);
-
-                    InstructionSetLed instr = new InstructionSetLed((byte)ScopeRx.KEY_EN_F7, Color.White);
-                    QueueInstruction(instr);
-                    await Task.Delay(_onTime);
-
-                    instr = new InstructionSetLed((byte)ScopeRx.KEY_EN_F7, Color.Black);
-                    QueueInstruction(instr);
-                    await Task.Delay(_offTime);
-
-
-                }
-            }
-        
+       
         public void QueueInstruction(InstructionBase instr)
         {
             if (_pool.Bc != null)
@@ -74,15 +53,15 @@ namespace ROGStrixScopeRx.Library.Generators
                 {
 
 
-                    InstructionSetLed instr = new InstructionSetLed((byte)ScopeRx.KEY_EN_F7, Color.White);
+                    //InstructionSetLed instr = new InstructionSetLed((byte)ScopeRx.KEY_EN_F7, Color.White);
+                    InstructionSetAllLeds instr = new InstructionSetAllLeds(Color.Black);
                     QueueInstruction(instr);
                      await Task.Delay(_onTime);
-                    _logger.LogInformation("ON");
 
-                    instr = new InstructionSetLed((byte)ScopeRx.KEY_EN_F7, Color.Black);
+                    //instr = new InstructionSetLed((byte)ScopeRx.KEY_EN_F7, Color.Black);
+                    instr = new InstructionSetAllLeds(Color.Blue);
                     QueueInstruction(instr);
                     await Task.Delay(_offTime);
-                    _logger.LogInformation("OFF");
 
                 }
 
