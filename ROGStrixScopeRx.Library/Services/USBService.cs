@@ -276,13 +276,12 @@ namespace ROGStrixScopeRx.Library.Services
         {
             RxMessageMultiLedFrame rx = new RxMessageMultiLedFrame(setallled.Ledlist);
 
-            for(int i = 0; i < RxMessageMultiLedFrame.Frames.Count; i++)
+            for (int i = 0; i < RxMessageMultiLedFrame.Frames.Count; i++)
             {
                 _device.Write(RxMessageMultiLedFrame.Frames[i].OutBytes);
-                
+
 
             }
-
             ClearResponses();
 
 

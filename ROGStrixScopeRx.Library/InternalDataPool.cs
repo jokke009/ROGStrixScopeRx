@@ -32,9 +32,13 @@ namespace ROGStrixScopeRx.Library
 
         private ConcurrentDictionary<int, BaseReoprter> _reporters;
         public ConcurrentDictionary<int, BaseReoprter> Reporters { get => _reporters; set => _reporters = value; }
+
+        public ConcurrentDictionary<ScopeRx, Color> KeyColorDictionary { get => _keyColorDictionary; set => _keyColorDictionary = value; }
         public AppSettings _appSettings { get; private set; }
 
         static byte globalIterator;
+        private ConcurrentDictionary<ScopeRx, Color> _keyColorDictionary;
+
         public static byte GlobalIterator { get => globalIterator; set => globalIterator = value; }
         
         
@@ -48,7 +52,16 @@ namespace ROGStrixScopeRx.Library
         {
             _logger = logger;
             Init();
+            PopulateKeyMap();
 
+        }
+
+        private void PopulateKeyMap()
+        {
+            foreach(var key in KeyMap.KeyMappings.Keys)
+            {
+                KeyColorDictionary.TryAdd(key, Color.Beige);
+            }
         }
 
         private void Init()
