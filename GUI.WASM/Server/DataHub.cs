@@ -1,7 +1,8 @@
 ﻿using Microsoft.AspNetCore.SignalR;
+using System.Drawing;
 
-internal class DataHub : Hub
+public  class DataHub : Hub
 {
-    public async Task SendMessage(string user, string message)
-    => await Clients.All.SendAsync("ReceiveMessage", user, message);
+    //public async Task SendMessage(string key, string value)
+    //=> await Clients.All.SendAsync("DataMessage", key, value);
 }

@@ -122,13 +122,15 @@ namespace ROGStrixScopeRx.Library.Defintions
             { ScopeRx.KEY_EN_F10, new KeyCoords(518.53, 40.685) },
             { ScopeRx.KEY_EN_DOWN_ARROW, new KeyCoords(698.53, 260.69) },
             { ScopeRx.KEY_EN_UP_ARROW, new KeyCoords(698.53, 220.69) },
-            { ScopeRx.KEY_EN_NUMPAD_2, new KeyCoords(838.53, 260.69) },
+            //{ ScopeRx.KEY_EN_NUMPAD_2, new KeyCoords(838.53, 260.69) },
             { ScopeRx.KEY_EN_NUMPAD_5, new KeyCoords(838.53, 180.69) },
             { ScopeRx.KEY_EN_NUMPAD_8, new KeyCoords(838.53, 140.69) },
             { ScopeRx.KEY_EN_NUMPAD_DIVIDE, new KeyCoords(838.53, 100.69) },
             { ScopeRx.KEY_EN_NUMPAD_LOCK, new KeyCoords(798.53, 100.69) },
             { ScopeRx.KEY_EN_HOME, new KeyCoords(698.53, 100.69) },
-            { ScopeRx.KEY_EN_F12, new KeyCoords(598.53007, 40.685) } // Corrected x position
+            { ScopeRx.KEY_EN_F12, new KeyCoords(598.53007, 40.685) }, // Corrected x position
+            { ScopeRx.KEY_EN_SPACE, new KeyCoords(198.53, 260.69,240,40) }, // Manually added
+            { ScopeRx.KEY_EN_ANSI_ENTER, new KeyCoords(578.53003,140.69,60,80) } // Manually added
         };
     }
 }

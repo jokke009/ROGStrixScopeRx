@@ -1,4 +1,6 @@
+using GUI.WASM.Server;
 using Microsoft.AspNetCore.ResponseCompression;
+using ROGStrixScopeRx.Library;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -6,7 +8,9 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
-builder.Services.AddSignalR();
+builder.Services.AddSignalR().AddMessagePackProtocol();
+builder.Services.AddSingleton<IDatapool, InternalDataPool>();
+builder.Services.AddHostedService<DataConsumer>();
 
 var app = builder.Build();
 
@@ -31,7 +35,7 @@ app.UseRouting();
 
 
 app.MapRazorPages();
-app.MapHub<DataHub>("/Data");
+app.MapHub<DataHub>("/datahub");
 app.MapControllers();
 app.MapFallbackToFile("index.html");
 

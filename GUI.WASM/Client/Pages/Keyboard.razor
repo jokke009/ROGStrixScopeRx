@@ -1,246 +1,255 @@
 ﻿@page "/keyboard"
 @using GUI.WASM.Shared
-@using System.Drawing;
+@using System.Drawing
+
 @using System.Timers
-@using ROGStrixScopeRx.Library.Defintions;
+@using ROGStrixScopeRx.Library.Defintions
+@using Microsoft.AspNetCore.SignalR.Client;
+@using Microsoft.Extensions.DependencyInjection;
+@using System.Collections.Concurrent;
+@inject NavigationManager Navigation
+
 @inject HttpClient Http
 
 <PageTitle>Keyboard</PageTitle>
 
 <h1>Keyboard overview layout</h1>
 
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 <svg height="547.16" width="1722" version="1.1" viewBox="17 17 963.04639 307.37054" id="svg251" sodipodi:docname="QWERTY_keyboard_diagram.svg" inkscape:version="1.3 (0e150ed6c4, 2023-07-21)" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg">
-  <defs id="defs251" />
-  <sodipodi:namedview id="namedview251" pagecolor="#ffffff" bordercolor="#000000" borderopacity="0.25" inkscape:showpageshadow="2" inkscape:pageopacity="0.0" inkscape:pagecheckerboard="0" inkscape:deskcolor="#d1d1d1" inkscape:zoom="1.4142136" inkscape:cx="342.23968" inkscape:cy="493.56053" inkscape:window-width="2097" inkscape:window-height="1358" inkscape:window-x="187" inkscape:window-y="560" inkscape:window-maximized="0" inkscape:current-layer="svg251" />
-  <rect height="300" width="960" stroke="#000" y="20.685" x="18.526" stroke-width="4" fill="#fff" id="rect1">
-  </rect>
-  <g stroke="#000" fill="none" id="g106" style="image-rendering:auto">
-    <title id="title251">F1</title>
-    <g stroke-width="4" id="g59">
+    <defs id="defs251" />
+    <sodipodi:namedview id="namedview251" pagecolor="#ffffff" bordercolor="#000000" borderopacity="0.25" inkscape:showpageshadow="2" inkscape:pageopacity="0.0" inkscape:pagecheckerboard="0" inkscape:deskcolor="#d1d1d1" inkscape:zoom="1.4142136" inkscape:cx="342.23968" inkscape:cy="493.56053" inkscape:window-width="2097" inkscape:window-height="1358" inkscape:window-x="187" inkscape:window-y="560" inkscape:window-maximized="0" inkscape:current-layer="svg251" />
+    <rect height="300" width="960" stroke="#000" y="20.685" x="18.526" stroke-width="4" fill="#fff" id="rect1">
+    </rect>
+    <g stroke="#000" fill="none" id="g106" style="image-rendering:auto">
+        <title id="title251">F1</title>
+        <g stroke-width="4" id="g59">
             @foreach (var kvp in rectProperties)
             {
                 KeyCoords properties = kvp.Value;
-                <rect height="@properties.H" width="@properties.W" y="@properties.Y" x="@properties.X" style="fill:@aquaHex; fill-opacity:1">
+                keyColors.TryGetValue(kvp.Key, out Color keyC);
+                string mkeyColString = HexConverter(keyC);
+                <rect height="@properties.H" width="@properties.W" y="@properties.Y" x="@properties.X" style="fill:@mkeyColString; fill-opacity:1">
                 </rect>
             }
-       <rect height="40" width="40" y="40.685" x="658.53" id="rect12" />
-            <rect height="40" width="240" y="260.69" x="198.53" id="rect88" />
+            <rect height="40" width="40" y="40.685" x="658.53" id="rect12" />
+@*             <rect height="40" width="240" y="260.69" x="198.53" id="rect88" /> *@
             <rect height="40" width="60" y="260.69" x="78.526" id="rect86" />
             <rect height="40" width="20" y="180.69" x="98.526" id="rect72" />
-                  <rect height="40" width="40" y="100.69" x="198.53" id="rect36" />
-      <rect height="40" width="40" y="100.69" x="238.53" id="rect37" />
+            <rect height="40" width="40" y="100.69" x="198.53" id="rect36" />
+            <rect height="40" width="40" y="100.69" x="238.53" id="rect37" />
+        </g>
     </g>
-  </g>
-  <g stroke="#000" stroke-width="4" fill="none" id="g109">
-    <rect height="40" width="160" y="40.685" x="798.53" id="rect106" />
-    <rect height="8" width="16" y="56.685" x="826.71" id="rect107" />
-    <rect height="8" width="16" y="56.685" x="870.53" id="rect108" />
-    <rect height="8" width="16" y="56.685" x="914.34" id="rect109" />
-  </g>
-  <g font-weight="700" font-family="sans-serif" id="g251">
-    <g font-size="14.111px" fill="#000" id="g137">
-      <text style="text-anchor:middle" id="text137">
-        <tspan y="116.14627" x="58.525745" id="tspan109">~</tspan>
-        <tspan y="133.78528" x="58.525745" id="tspan110">`</tspan>
-        <tspan y="116.14627" x="98.525742" id="tspan111">!</tspan>
-        <tspan y="133.78528" x="98.525742" id="tspan112">1</tspan>
-        <tspan y="116.14627" x="138.52574" id="tspan113">@@</tspan>
-        <tspan y="133.78528" x="138.52574" id="tspan114">2</tspan>
-        <tspan y="116.14627" x="178.52574" id="tspan115">#</tspan>
-        <tspan y="133.78528" x="178.52574" id="tspan116">3</tspan>
-        <tspan y="116.14627" x="218.52574" id="tspan117">$</tspan>
-        <tspan y="133.78528" x="218.52574" id="tspan118">4</tspan>
-        <tspan y="116.14627" x="258.52576" id="tspan119">%</tspan>
-        <tspan y="133.78528" x="258.52576" id="tspan120">5</tspan>
-        <tspan y="116.14627" x="298.52576" id="tspan121">^</tspan>
-        <tspan y="133.78528" x="298.52576" id="tspan122">6</tspan>
-        <tspan y="116.14627" x="338.52576" id="tspan123">&amp;</tspan>
-        <tspan y="133.78528" x="338.52576" id="tspan124">7</tspan>
-        <tspan y="116.14627" x="378.52576" id="tspan125">*</tspan>
-        <tspan y="133.78528" x="378.52576" id="tspan126">8</tspan>
-        <tspan y="116.14627" x="418.52576" id="tspan127">(</tspan>
-        <tspan y="133.78528" x="418.52576" id="tspan128">9</tspan>
-        <tspan y="116.14627" x="458.52576" id="tspan129">)</tspan>
-        <tspan y="133.78528" x="458.52576" id="tspan130">0</tspan>
-        <tspan y="116.14627" x="498.52576" id="tspan131">_</tspan>
-        <tspan y="133.78528" x="498.52576" id="tspan132">-</tspan>
-        <tspan y="116.14627" x="538.52576" id="tspan133">+</tspan>
-        <tspan y="133.78528" x="538.52576" id="tspan134">=</tspan>
-        <tspan y="116.14627" x="578.52576" id="tspan135">|</tspan>
-        <tspan y="133.78528" x="578.52576" id="tspan136">\</tspan>
-        <tspan y="124.96627" x="618.52576" id="tspan137">←</tspan>
-      </text>
+    <g stroke="#000" stroke-width="4" fill="none" id="g109">
+        <rect height="40" width="160" y="40.685" x="798.53" id="rect106" />
+        <rect height="8" width="16" y="56.685" x="826.71" id="rect107" />
+        <rect height="8" width="16" y="56.685" x="870.53" id="rect108" />
+        <rect height="8" width="16" y="56.685" x="914.34" id="rect109" />
     </g>
-    <g font-size="14.111px" fill="#000" id="g152">
-      <text style="text-anchor:middle" id="text152">
-        <tspan y="164.96628" x="68.525742" id="tspan138">Tab</tspan>
-        <tspan y="164.96628" x="118.52574" id="tspan139">Q</tspan>
-        <tspan y="164.96628" x="158.52574" id="tspan140">W</tspan>
-        <tspan y="164.96628" x="198.52574" id="tspan141">E</tspan>
-        <tspan y="164.96628" x="238.52574" id="tspan142">R</tspan>
-        <tspan y="164.96628" x="278.52576" id="tspan143">T</tspan>
-        <tspan y="164.96628" x="318.52576" id="tspan144">Y</tspan>
-        <tspan y="164.96628" x="358.52576" id="tspan145">U</tspan>
-        <tspan y="164.96628" x="398.52576" id="tspan146">I</tspan>
-        <tspan y="164.96628" x="438.52576" id="tspan147">O</tspan>
-        <tspan y="164.96628" x="478.52576" id="tspan148">P</tspan>
-        <tspan y="156.14627" x="518.52576" id="tspan149">{</tspan>
-        <tspan y="173.78528" x="518.52576" id="tspan150">[</tspan>
-        <tspan y="156.14627" x="558.52576" id="tspan151">}</tspan>
-        <tspan y="173.78528" x="558.52576" id="tspan152">]</tspan>
-      </text>
+    <g font-weight="700" font-family="sans-serif" id="g251">
+        <g font-size="14.111px" fill="#000" id="g137">
+            <text style="text-anchor:middle" id="text137">
+                <tspan y="116.14627" x="58.525745" id="tspan109">~</tspan>
+                <tspan y="133.78528" x="58.525745" id="tspan110">`</tspan>
+                <tspan y="116.14627" x="98.525742" id="tspan111">!</tspan>
+                <tspan y="133.78528" x="98.525742" id="tspan112">1</tspan>
+                <tspan y="116.14627" x="138.52574" id="tspan113">@@</tspan>
+                <tspan y="133.78528" x="138.52574" id="tspan114">2</tspan>
+                <tspan y="116.14627" x="178.52574" id="tspan115">#</tspan>
+                <tspan y="133.78528" x="178.52574" id="tspan116">3</tspan>
+                <tspan y="116.14627" x="218.52574" id="tspan117">$</tspan>
+                <tspan y="133.78528" x="218.52574" id="tspan118">4</tspan>
+                <tspan y="116.14627" x="258.52576" id="tspan119">%</tspan>
+                <tspan y="133.78528" x="258.52576" id="tspan120">5</tspan>
+                <tspan y="116.14627" x="298.52576" id="tspan121">^</tspan>
+                <tspan y="133.78528" x="298.52576" id="tspan122">6</tspan>
+                <tspan y="116.14627" x="338.52576" id="tspan123">&amp;</tspan>
+                <tspan y="133.78528" x="338.52576" id="tspan124">7</tspan>
+                <tspan y="116.14627" x="378.52576" id="tspan125">*</tspan>
+                <tspan y="133.78528" x="378.52576" id="tspan126">8</tspan>
+                <tspan y="116.14627" x="418.52576" id="tspan127">(</tspan>
+                <tspan y="133.78528" x="418.52576" id="tspan128">9</tspan>
+                <tspan y="116.14627" x="458.52576" id="tspan129">)</tspan>
+                <tspan y="133.78528" x="458.52576" id="tspan130">0</tspan>
+                <tspan y="116.14627" x="498.52576" id="tspan131">_</tspan>
+                <tspan y="133.78528" x="498.52576" id="tspan132">-</tspan>
+                <tspan y="116.14627" x="538.52576" id="tspan133">+</tspan>
+                <tspan y="133.78528" x="538.52576" id="tspan134">=</tspan>
+                <tspan y="116.14627" x="578.52576" id="tspan135">|</tspan>
+                <tspan y="133.78528" x="578.52576" id="tspan136">\</tspan>
+                <tspan y="124.96627" x="618.52576" id="tspan137">←</tspan>
+            </text>
+        </g>
+        <g font-size="14.111px" fill="#000" id="g152">
+            <text style="text-anchor:middle" id="text152">
+                <tspan y="164.96628" x="68.525742" id="tspan138">Tab</tspan>
+                <tspan y="164.96628" x="118.52574" id="tspan139">Q</tspan>
+                <tspan y="164.96628" x="158.52574" id="tspan140">W</tspan>
+                <tspan y="164.96628" x="198.52574" id="tspan141">E</tspan>
+                <tspan y="164.96628" x="238.52574" id="tspan142">R</tspan>
+                <tspan y="164.96628" x="278.52576" id="tspan143">T</tspan>
+                <tspan y="164.96628" x="318.52576" id="tspan144">Y</tspan>
+                <tspan y="164.96628" x="358.52576" id="tspan145">U</tspan>
+                <tspan y="164.96628" x="398.52576" id="tspan146">I</tspan>
+                <tspan y="164.96628" x="438.52576" id="tspan147">O</tspan>
+                <tspan y="164.96628" x="478.52576" id="tspan148">P</tspan>
+                <tspan y="156.14627" x="518.52576" id="tspan149">{</tspan>
+                <tspan y="173.78528" x="518.52576" id="tspan150">[</tspan>
+                <tspan y="156.14627" x="558.52576" id="tspan151">}</tspan>
+                <tspan y="173.78528" x="558.52576" id="tspan152">]</tspan>
+            </text>
+        </g>
+        <g font-size="14.111px" fill="#000" id="g167">
+            <text style="text-anchor:middle" id="text167">
+                <tspan y="204.96628" x="598.52576" id="tspan153">Enter</tspan>
+                <tspan y="204.96628" x="68.525742" id="tspan154">Caps</tspan>
+                <tspan y="204.96628" x="138.52574" id="tspan155">A</tspan>
+                <tspan y="204.96628" x="178.52574" id="tspan156">S</tspan>
+                <tspan y="204.96628" x="218.52574" id="tspan157">D</tspan>
+                <tspan y="204.96628" x="258.52576" id="tspan158">F</tspan>
+                <tspan y="204.96628" x="298.52576" id="tspan159">G</tspan>
+                <tspan y="204.96628" x="338.52576" id="tspan160">H</tspan>
+                <tspan y="204.96628" x="378.52576" id="tspan161">J</tspan>
+                <tspan y="204.96628" x="418.52576" id="tspan162">K</tspan>
+                <tspan y="204.96628" x="458.52576" id="tspan163">L</tspan>
+                <tspan y="196.14627" x="498.52576" id="tspan164">:</tspan>
+                <tspan y="213.78528" x="498.52576" id="tspan165">;</tspan>
+                <tspan y="196.14627" x="538.52576" id="tspan166">&quot;</tspan>
+                <tspan y="213.78528" x="538.52576" id="tspan167">'</tspan>
+            </text>
+        </g>
+        <g font-size="14.111px" fill="#000" id="g182">
+            <text style="text-anchor:middle" id="text182">
+                <tspan y="244.96628" x="158.52574" id="tspan168">Z</tspan>
+                <tspan y="244.96628" x="198.52574" id="tspan169">X</tspan>
+                <tspan y="244.96628" x="238.52574" id="tspan170">C</tspan>
+                <tspan y="244.96628" x="278.52576" id="tspan171">V</tspan>
+                <tspan y="244.96628" x="318.52576" id="tspan172">B</tspan>
+                <tspan y="244.96628" x="358.52576" id="tspan173">N</tspan>
+                <tspan y="244.96628" x="398.52576" id="tspan174">M</tspan>
+                <tspan y="236.14627" x="438.52576" id="tspan175">&lt;</tspan>
+                <tspan y="253.78528" x="438.52576" id="tspan176">,</tspan>
+                <tspan y="236.14627" x="478.52576" id="tspan177">&gt;</tspan>
+                <tspan y="253.78528" x="478.52576" id="tspan178">.</tspan>
+                <tspan y="236.14627" x="518.52576" id="tspan179">?</tspan>
+                <tspan y="253.78528" x="518.52576" id="tspan180">/</tspan>
+                <tspan y="244.96628" x="588.52576" id="tspan181">Shift</tspan>
+                <tspan y="244.96628" x="88.525742" id="tspan182">Shift</tspan>
+            </text>
+        </g>
+        <g font-size="14.111px" id="g185">
+            <text opacity="0" style="text-anchor:middle" id="text185">
+                <tspan y="284.96628" x="108.52574" id="tspan183">1</tspan>
+                <tspan y="284.96628" x="528.52576" id="tspan184">1</tspan>
+                <tspan y="284.96628" x="578.52576" id="tspan185">1</tspan>
+            </text>
+        </g>
+        <g font-size="14.111px" fill="#000" id="g189">
+            <text style="text-anchor:middle" id="text189">
+                <tspan y="284.96628" x="58.525745" id="tspan186">Ctrl</tspan>
+                <tspan y="284.96628" x="168.52574" id="tspan187">Alt</tspan>
+                <tspan y="284.96628" x="468.52576" id="tspan188">Alt</tspan>
+                <tspan y="284.96628" x="618.52576" id="tspan189">Ctrl</tspan>
+            </text>
+        </g>
+        <g font-size="8.4667px" fill="#000" id="g196">
+            <text style="text-anchor:middle" id="text196">
+                <tspan y="52.660267" x="678.52576" id="tspan190">Print</tspan>
+                <tspan y="63.243568" x="678.52576" id="tspan191">Scrn</tspan>
+                <tspan y="73.826973" x="678.52576" id="tspan192">SysRq</tspan>
+                <tspan y="57.951969" x="758.52576" id="tspan193">Pause</tspan>
+                <tspan y="68.535271" x="758.52576" id="tspan194">Break</tspan>
+                <tspan y="57.951969" x="718.52576" id="tspan195">Scroll</tspan>
+                <tspan y="68.535271" x="718.52576" id="tspan196">Lock</tspan>
+            </text>
+        </g>
+        <g font-size="14.111px" fill="#000" id="g209">
+            <text style="text-anchor:middle" id="text209">
+                <tspan y="64.965874" x="58.525745" id="tspan197">Esc</tspan>
+                <tspan y="64.965874" x="138.52574" id="tspan198">F1</tspan>
+                <tspan y="64.965874" x="178.52574" id="tspan199">F2</tspan>
+                <tspan y="64.965874" x="218.52574" id="tspan200">F3</tspan>
+                <tspan y="64.965874" x="258.52576" id="tspan201">F4</tspan>
+                <tspan y="64.965874" x="318.52576" id="tspan202">F5</tspan>
+                <tspan y="64.965874" x="358.52576" id="tspan203">F6</tspan>
+                <tspan y="64.965874" x="398.52576" id="tspan204">F7</tspan>
+                <tspan y="64.965874" x="438.52576" id="tspan205">F8</tspan>
+                <tspan y="64.965874" x="498.52576" id="tspan206">F9</tspan>
+                <tspan y="64.965874" x="538.52576" id="tspan207">F10</tspan>
+                <tspan y="64.965874" x="578.52576" id="tspan208">F11</tspan>
+                <tspan y="64.965874" x="618.52576" id="tspan209">F12</tspan>
+            </text>
+        </g>
+        <g font-size="14.111px" fill="#000" id="g213">
+            <text style="text-anchor:middle" id="text213">
+                <tspan y="284.96628" x="678.52576" id="tspan210">←</tspan>
+                <tspan y="284.96628" x="758.52576" id="tspan211">→</tspan>
+                <tspan y="284.96628" x="718.52576" id="tspan212">↓</tspan>
+                <tspan y="244.96628" x="718.52576" id="tspan213">↑</tspan>
+            </text>
+        </g>
+        <g font-size="14.111px" fill="#000" id="g228">
+            <text style="text-anchor:middle" id="text228">
+                <tspan y="124.96627" x="898.52576" id="tspan214">*</tspan>
+                <tspan y="124.96627" x="938.52576" id="tspan215">-</tspan>
+                <tspan y="164.96628" x="818.52576" id="tspan216">7</tspan>
+                <tspan y="164.96628" x="898.52576" id="tspan217">9</tspan>
+                <tspan y="184.96628" x="938.52576" id="tspan218">+</tspan>
+                <tspan y="204.96628" x="818.52576" id="tspan219">4</tspan>
+                <tspan y="204.96628" x="898.52576" id="tspan220">6</tspan>
+                <tspan y="244.96628" x="818.52576" id="tspan221">1</tspan>
+                <tspan y="244.96628" x="898.52576" id="tspan222">3</tspan>
+                <tspan y="284.96628" x="838.52576" id="tspan223">0</tspan>
+                <tspan y="284.96628" x="898.52576" id="tspan224">.</tspan>
+                <tspan y="244.96628" x="858.52576" id="tspan225">2</tspan>
+                <tspan y="204.96628" x="858.52576" id="tspan226">5</tspan>
+                <tspan y="164.96628" x="858.52576" id="tspan227">8</tspan>
+                <tspan y="124.96627" x="858.52576" id="tspan228">/</tspan>
+            </text>
+        </g>
+        <g font-size="8.4667px" fill="#000" id="g236">
+            <text style="text-anchor:middle" id="text236">
+                <tspan y="123.24327" x="678.52576" id="tspan229">Insert</tspan>
+                <tspan y="117.95227" x="758.52576" id="tspan230">Page</tspan>
+                <tspan y="128.53526" x="758.52576" id="tspan231">Up</tspan>
+                <tspan y="163.24327" x="678.52576" id="tspan232">Delete</tspan>
+                <tspan y="157.95227" x="758.52576" id="tspan233">Page</tspan>
+                <tspan y="168.53528" x="758.52576" id="tspan234">Down</tspan>
+                <tspan y="163.24327" x="718.52576" id="tspan235">End</tspan>
+                <tspan y="123.24327" x="718.52576" id="tspan236">Home</tspan>
+            </text>
+        </g>
+        <g fill="#000" id="g250">
+            <g font-size="8.4667px" id="g245">
+                <text style="text-anchor:middle" id="text245">
+                    <tspan y="263.24329" x="938.52576" id="tspan237">Enter</tspan>
+                    <tspan y="117.95227" x="818.52576" id="tspan238">Num</tspan>
+                    <tspan y="128.53526" x="818.52576" id="tspan239">Lock</tspan>
+                    <tspan y="173.82727" x="818.52527" id="tspan240">Home</tspan>
+                    <tspan y="173.82727" x="898.52527" id="tspan241">Pg Up</tspan>
+                    <tspan y="253.82727" x="818.52527" id="tspan242">End</tspan>
+                    <tspan y="253.82727" x="898.52527" id="tspan243">Pg Dn</tspan>
+                    <tspan y="293.82727" x="838.52527" id="tspan244">Ins</tspan>
+                    <tspan y="293.82727" x="898.52527" id="tspan245">Del</tspan>
+                </text>
+            </g>
+            <g font-size="14.111px" id="g249">
+                <text style="text-anchor:middle" id="text249">
+                    <tspan y="215.07796" x="818.52527" id="tspan246">←</tspan>
+                    <tspan y="215.07796" x="898.52527" id="tspan247">→</tspan>
+                    <tspan y="256.20148" x="858.52527" id="tspan248">↓</tspan>
+                    <tspan y="176.20148" x="858.52527" id="tspan249">↑</tspan>
+                </text>
+            </g>
+        </g>
     </g>
-    <g font-size="14.111px" fill="#000" id="g167">
-      <text style="text-anchor:middle" id="text167">
-        <tspan y="204.96628" x="598.52576" id="tspan153">Enter</tspan>
-        <tspan y="204.96628" x="68.525742" id="tspan154">Caps</tspan>
-        <tspan y="204.96628" x="138.52574" id="tspan155">A</tspan>
-        <tspan y="204.96628" x="178.52574" id="tspan156">S</tspan>
-        <tspan y="204.96628" x="218.52574" id="tspan157">D</tspan>
-        <tspan y="204.96628" x="258.52576" id="tspan158">F</tspan>
-        <tspan y="204.96628" x="298.52576" id="tspan159">G</tspan>
-        <tspan y="204.96628" x="338.52576" id="tspan160">H</tspan>
-        <tspan y="204.96628" x="378.52576" id="tspan161">J</tspan>
-        <tspan y="204.96628" x="418.52576" id="tspan162">K</tspan>
-        <tspan y="204.96628" x="458.52576" id="tspan163">L</tspan>
-        <tspan y="196.14627" x="498.52576" id="tspan164">:</tspan>
-        <tspan y="213.78528" x="498.52576" id="tspan165">;</tspan>
-        <tspan y="196.14627" x="538.52576" id="tspan166">&quot;</tspan>
-        <tspan y="213.78528" x="538.52576" id="tspan167">'</tspan>
-      </text>
-    </g>
-    <g font-size="14.111px" fill="#000" id="g182">
-      <text style="text-anchor:middle" id="text182">
-        <tspan y="244.96628" x="158.52574" id="tspan168">Z</tspan>
-        <tspan y="244.96628" x="198.52574" id="tspan169">X</tspan>
-        <tspan y="244.96628" x="238.52574" id="tspan170">C</tspan>
-        <tspan y="244.96628" x="278.52576" id="tspan171">V</tspan>
-        <tspan y="244.96628" x="318.52576" id="tspan172">B</tspan>
-        <tspan y="244.96628" x="358.52576" id="tspan173">N</tspan>
-        <tspan y="244.96628" x="398.52576" id="tspan174">M</tspan>
-        <tspan y="236.14627" x="438.52576" id="tspan175">&lt;</tspan>
-        <tspan y="253.78528" x="438.52576" id="tspan176">,</tspan>
-        <tspan y="236.14627" x="478.52576" id="tspan177">&gt;</tspan>
-        <tspan y="253.78528" x="478.52576" id="tspan178">.</tspan>
-        <tspan y="236.14627" x="518.52576" id="tspan179">?</tspan>
-        <tspan y="253.78528" x="518.52576" id="tspan180">/</tspan>
-        <tspan y="244.96628" x="588.52576" id="tspan181">Shift</tspan>
-        <tspan y="244.96628" x="88.525742" id="tspan182">Shift</tspan>
-      </text>
-    </g>
-    <g font-size="14.111px" id="g185">
-      <text opacity="0" style="text-anchor:middle" id="text185">
-        <tspan y="284.96628" x="108.52574" id="tspan183">1</tspan>
-        <tspan y="284.96628" x="528.52576" id="tspan184">1</tspan>
-        <tspan y="284.96628" x="578.52576" id="tspan185">1</tspan>
-      </text>
-    </g>
-    <g font-size="14.111px" fill="#000" id="g189">
-      <text style="text-anchor:middle" id="text189">
-        <tspan y="284.96628" x="58.525745" id="tspan186">Ctrl</tspan>
-        <tspan y="284.96628" x="168.52574" id="tspan187">Alt</tspan>
-        <tspan y="284.96628" x="468.52576" id="tspan188">Alt</tspan>
-        <tspan y="284.96628" x="618.52576" id="tspan189">Ctrl</tspan>
-      </text>
-    </g>
-    <g font-size="8.4667px" fill="#000" id="g196">
-      <text style="text-anchor:middle" id="text196">
-        <tspan y="52.660267" x="678.52576" id="tspan190">Print</tspan>
-        <tspan y="63.243568" x="678.52576" id="tspan191">Scrn</tspan>
-        <tspan y="73.826973" x="678.52576" id="tspan192">SysRq</tspan>
-        <tspan y="57.951969" x="758.52576" id="tspan193">Pause</tspan>
-        <tspan y="68.535271" x="758.52576" id="tspan194">Break</tspan>
-        <tspan y="57.951969" x="718.52576" id="tspan195">Scroll</tspan>
-        <tspan y="68.535271" x="718.52576" id="tspan196">Lock</tspan>
-      </text>
-    </g>
-    <g font-size="14.111px" fill="#000" id="g209">
-      <text style="text-anchor:middle" id="text209">
-        <tspan y="64.965874" x="58.525745" id="tspan197">Esc</tspan>
-        <tspan y="64.965874" x="138.52574" id="tspan198">F1</tspan>
-        <tspan y="64.965874" x="178.52574" id="tspan199">F2</tspan>
-        <tspan y="64.965874" x="218.52574" id="tspan200">F3</tspan>
-        <tspan y="64.965874" x="258.52576" id="tspan201">F4</tspan>
-        <tspan y="64.965874" x="318.52576" id="tspan202">F5</tspan>
-        <tspan y="64.965874" x="358.52576" id="tspan203">F6</tspan>
-        <tspan y="64.965874" x="398.52576" id="tspan204">F7</tspan>
-        <tspan y="64.965874" x="438.52576" id="tspan205">F8</tspan>
-        <tspan y="64.965874" x="498.52576" id="tspan206">F9</tspan>
-        <tspan y="64.965874" x="538.52576" id="tspan207">F10</tspan>
-        <tspan y="64.965874" x="578.52576" id="tspan208">F11</tspan>
-        <tspan y="64.965874" x="618.52576" id="tspan209">F12</tspan>
-      </text>
-    </g>
-    <g font-size="14.111px" fill="#000" id="g213">
-      <text style="text-anchor:middle" id="text213">
-        <tspan y="284.96628" x="678.52576" id="tspan210">←</tspan>
-        <tspan y="284.96628" x="758.52576" id="tspan211">→</tspan>
-        <tspan y="284.96628" x="718.52576" id="tspan212">↓</tspan>
-        <tspan y="244.96628" x="718.52576" id="tspan213">↑</tspan>
-      </text>
-    </g>
-    <g font-size="14.111px" fill="#000" id="g228">
-      <text style="text-anchor:middle" id="text228">
-        <tspan y="124.96627" x="898.52576" id="tspan214">*</tspan>
-        <tspan y="124.96627" x="938.52576" id="tspan215">-</tspan>
-        <tspan y="164.96628" x="818.52576" id="tspan216">7</tspan>
-        <tspan y="164.96628" x="898.52576" id="tspan217">9</tspan>
-        <tspan y="184.96628" x="938.52576" id="tspan218">+</tspan>
-        <tspan y="204.96628" x="818.52576" id="tspan219">4</tspan>
-        <tspan y="204.96628" x="898.52576" id="tspan220">6</tspan>
-        <tspan y="244.96628" x="818.52576" id="tspan221">1</tspan>
-        <tspan y="244.96628" x="898.52576" id="tspan222">3</tspan>
-        <tspan y="284.96628" x="838.52576" id="tspan223">0</tspan>
-        <tspan y="284.96628" x="898.52576" id="tspan224">.</tspan>
-        <tspan y="244.96628" x="858.52576" id="tspan225">2</tspan>
-        <tspan y="204.96628" x="858.52576" id="tspan226">5</tspan>
-        <tspan y="164.96628" x="858.52576" id="tspan227">8</tspan>
-        <tspan y="124.96627" x="858.52576" id="tspan228">/</tspan>
-      </text>
-    </g>
-    <g font-size="8.4667px" fill="#000" id="g236">
-      <text style="text-anchor:middle" id="text236">
-        <tspan y="123.24327" x="678.52576" id="tspan229">Insert</tspan>
-        <tspan y="117.95227" x="758.52576" id="tspan230">Page</tspan>
-        <tspan y="128.53526" x="758.52576" id="tspan231">Up</tspan>
-        <tspan y="163.24327" x="678.52576" id="tspan232">Delete</tspan>
-        <tspan y="157.95227" x="758.52576" id="tspan233">Page</tspan>
-        <tspan y="168.53528" x="758.52576" id="tspan234">Down</tspan>
-        <tspan y="163.24327" x="718.52576" id="tspan235">End</tspan>
-        <tspan y="123.24327" x="718.52576" id="tspan236">Home</tspan>
-      </text>
-    </g>
-    <g fill="#000" id="g250">
-      <g font-size="8.4667px" id="g245">
-        <text style="text-anchor:middle" id="text245">
-          <tspan y="263.24329" x="938.52576" id="tspan237">Enter</tspan>
-          <tspan y="117.95227" x="818.52576" id="tspan238">Num</tspan>
-          <tspan y="128.53526" x="818.52576" id="tspan239">Lock</tspan>
-          <tspan y="173.82727" x="818.52527" id="tspan240">Home</tspan>
-          <tspan y="173.82727" x="898.52527" id="tspan241">Pg Up</tspan>
-          <tspan y="253.82727" x="818.52527" id="tspan242">End</tspan>
-          <tspan y="253.82727" x="898.52527" id="tspan243">Pg Dn</tspan>
-          <tspan y="293.82727" x="838.52527" id="tspan244">Ins</tspan>
-          <tspan y="293.82727" x="898.52527" id="tspan245">Del</tspan>
-        </text>
-      </g>
-      <g font-size="14.111px" id="g249">
-        <text style="text-anchor:middle" id="text249">
-          <tspan y="215.07796" x="818.52527" id="tspan246">←</tspan>
-          <tspan y="215.07796" x="898.52527" id="tspan247">→</tspan>
-          <tspan y="256.20148" x="858.52527" id="tspan248">↓</tspan>
-          <tspan y="176.20148" x="858.52527" id="tspan249">↑</tspan>
-        </text>
-      </g>
-    </g>
-  </g>
 </svg>
 
 
 
 
 @code {
+    private HubConnection? hubConnection;
     string ShowActualValue = "@ShowActualValue";
     Color newColor = Color.Aqua;
     Color newColor2 = Color.Beige;
@@ -249,20 +258,58 @@
 
     Dictionary<ScopeRx, KeyCoords> rectProperties = KeyMap.KeyMappings;
 
+    ConcurrentDictionary<ScopeRx, Color> keyColors = new ConcurrentDictionary<ScopeRx, Color>();
+
 
     string blueHex = ColorTranslator.ToHtml(Color.Aqua);
     protected override async Task OnInitializedAsync()
     {
+        aquaHex = HexConverter(newColor);
+        //StartColorToggleTimer();
+        PopulateConcurrentDictionary();
+        hubConnection = new HubConnectionBuilder()
+            .WithUrl(Navigation.ToAbsoluteUri("/datahub"))
+                                    .AddMessagePackProtocol()
+                        .Build();
 
-            aquaHex = HexConverter(newColor);
-        StartColorToggleTimer();
+        hubConnection.On<byte, KeyColor>("KeyMessage", (key, color) =>
+    {
+        var matchingblock = rectProperties.FirstOrDefault(b => (byte)b.Key == key);
+
+        Console.WriteLine($"Key: {key.ToString()} is COlor: {color.ToString()}");
+
+        Color existingValue = keyColors[(ScopeRx)key];
+
+        keyColors.TryUpdate((ScopeRx)key, Color.FromArgb(color.Red, color.Green, color.Blue), existingValue);
+        StateHasChanged();
+    });
+        hubConnection.On<List<Tuple<byte,KeyColor>>>("MultiKeyMessage", (list) =>
+    {
+        foreach(var l in list)
+        {
+            Color existingValue = keyColors[(ScopeRx)l.Item1];
+            keyColors.TryUpdate((ScopeRx)l.Item1, Color.FromArgb(l.Item2.Red, l.Item2.Green, l.Item2.Blue), existingValue);
+        }
+        StateHasChanged();
+    });
+
+
+        hubConnection.On<string, string>("DataMessage", (string1, string2) =>
+    {
+
+        Console.WriteLine($"String1: {string1} is String2: {string2}");
+        StateHasChanged();
+    });
+
+        await hubConnection.StartAsync();
+
     }
 
     private static String HexConverter(System.Drawing.Color c)
     {
         return "#" + c.R.ToString("X2") + c.G.ToString("X2") + c.B.ToString("X2");
     }
-        private void StartColorToggleTimer()
+    private void StartColorToggleTimer()
     {
         colorToggleTimer = new Timer(1000); // 1000 milliseconds (1 second)
         colorToggleTimer.Elapsed += (sender, e) => ToggleColor();
@@ -280,8 +327,22 @@
         {
             aquaHex = HexConverter(newColor);
         }
-
         InvokeAsync(StateHasChanged);
     }
 
+    private void PopulateConcurrentDictionary()
+    {
+        // Populate the concurrent dictionary with KeyInfo
+        foreach (var kvp in rectProperties)
+        {
+            ScopeRx key = kvp.Key;
+            KeyCoords coordinates = kvp.Value;
+
+            // Get a random color for each key
+            Color randomColor = Color.Blue;
+
+            // Add the key and KeyInfo to the concurrent dictionary
+            keyColors.TryAdd(key, randomColor);
+        }
+    }
 }
