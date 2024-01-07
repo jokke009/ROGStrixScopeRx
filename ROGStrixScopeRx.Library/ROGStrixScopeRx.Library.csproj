@@ -17,4 +17,10 @@
     <Folder Include="Mutators\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="hidapi.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

@@ -14,7 +14,7 @@ namespace GUI.WASM.Server
         private readonly IDatapool _datapool;
         private readonly IHubContext<DataHub> _hub;
 
-        private readonly int _tickRate = 50;
+        private readonly int _tickRate = 500;
         public int TickRate => _tickRate;
         private KeyColor toggle = new KeyColor();
         public DataConsumer(ILogger<DataConsumer> logger, IHubContext<DataHub> hubContext, IDatapool datapool)
@@ -99,12 +99,12 @@ namespace GUI.WASM.Server
         {
             Random random = new Random();
             var keylist = new List<Tuple<byte, KeyColor>>();
-            foreach (var keym in KeyMap.KeyMappings)
+            foreach (var keym in _datapool.KeyColorDictionary)
             {
                 // Generate random values for the color components (RGB)
-                byte red = (byte)random.Next(256);
-                byte green = (byte)random.Next(256);
-                byte blue = (byte)random.Next(256);
+                byte red = keym.Value.R;
+                byte green = keym.Value.G;
+                byte blue = keym.Value.B;
 
                 KeyColor test = new()
                 {

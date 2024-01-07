@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ROGStrixScopeRx.Library.Services
 {
-    internal interface IProduceService : IHostedService
+    public  interface IProduceService : IHostedService
     {
 
     }

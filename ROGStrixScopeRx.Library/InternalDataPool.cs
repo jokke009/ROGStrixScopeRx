@@ -51,6 +51,8 @@ namespace ROGStrixScopeRx.Library
         public InternalDataPool(ILogger<InternalDataPool> logger)
         {
             _logger = logger;
+
+            KeyColorDictionary = new ConcurrentDictionary<ScopeRx, Color>();
             Init();
             PopulateKeyMap();
 

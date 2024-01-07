@@ -13,7 +13,7 @@ namespace ROGStrixScopeRx.Library
     {
         private readonly IDatapool _pool;
 
-        static int _tickRate = 50;
+        static int _tickRate = 200;
         public static int TickRate { get => _tickRate; set => _tickRate = value; }
         public DataPoolWorker(IDatapool pool)
         {
@@ -31,13 +31,15 @@ namespace ROGStrixScopeRx.Library
         {
             while (!stoppingToken.IsCancellationRequested)
             {
-                foreach (var rep in _pool.Reporters.Values.Where(x => x.HasUpdate == true))
-                {
-                    var col = rep.Get8BitValue();
-                    InstructionSetLed instr = new InstructionSetLed(rep.KeyBinding, Color.FromArgb(col, 255 - col, 0));
-                    QueueInstruction(instr);
-                }
-
+                //foreach (var rep in _pool.Reporters.Values.Where(x => x.HasUpdate == true))
+                //{
+                //    var col = rep.Get8BitValue();
+                //    InstructionSetLed instr = new InstructionSetLed(rep.KeyBinding, Color.FromArgb(col, 255 - col, 0));
+                //    QueueInstruction(instr);
+                //}
+                 var leds = _pool.KeyColorDictionary.Select(kvp => new Tuple<byte,Color>((byte)kvp.Key, kvp.Value)).ToList();
+                InstructionSetAllLeds instr = new InstructionSetAllLeds(leds);
+                QueueInstruction(instr);
                 await Task.Delay(TickRate);
             }
 

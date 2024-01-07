@@ -11,6 +11,7 @@ using System.Diagnostics.Metrics;
 using System.Drawing;
 using System.Linq;
 using System.Net.Sockets;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 using System.Text;
@@ -55,8 +56,33 @@ namespace ROGStrixScopeRx.Library.Services
             _state.IsConnected = false;
             _logger.LogDebug($"Constructor called, IsConnected: {_state.IsConnected}");
 
-            _path = @"\\?\\HID#VID_0B05&PID_1951&MI_01#8&ca448dc&0&0000#{4d1e55b2-f16f-11cf-88cb-001111000030}";
-            _device = new Device(_path);
+            //foreach (var deviceInfo in Hid.Enumerate())
+            //{
+            //    using var device = deviceInfo.ConnectToDevice();
+            //    Console.WriteLine($"GetManufacturer: {device.GetManufacturer()} name: {device.GetProduct()}");
+            //    Console.WriteLine($"GetDeviceInfo: {device.GetDeviceInfo()}");
+            //    var test = device.GetReportDescriptor();
+            //    var test2 = device.GetDeviceInfo();
+            //    Console.WriteLine($"GetDeviceInfo: {device.GetDeviceInfo()}");
+            //}
+
+
+            var devicepathIds = Hid.Enumerate(0x0B05, 0x1951);
+
+            _device = devicepathIds.FirstOrDefault(x=> x.InterfaceNumber == 1).ConnectToDevice();
+
+            //foreach (var deviceInfo in Hid.Enumerate(0x0B05, 0x1951))
+            //{
+            //    using var device = deviceInfo.ConnectToDevice();
+            //    Console.WriteLine($"GetManufacturer: {device.GetManufacturer()} name: {device.GetProduct()}");
+            //    Console.WriteLine($"GetDeviceInfo: {device.GetDeviceInfo()}");
+            //    var test = device.GetReportDescriptor();
+            //    var test2 = device.GetDeviceInfo();
+            //    Console.WriteLine($"GetDeviceInfo: {device.GetDeviceInfo()}");
+            //}
+
+            //_path = @"\\?\\HID#VID_0B05&PID_1951&MI_01#8&ca448dc&0&0000#{4d1e55b2-f16f-11cf-88cb-001111000030}";
+            //_device.Write(;
             _cts = new CancellationTokenSource();
             
 
@@ -67,7 +93,7 @@ namespace ROGStrixScopeRx.Library.Services
 
 
 
-            _logger.LogInformation("Hello World!" + Hid.Enumerate(0x0B05, 0x1951).ToString());
+            _logger.LogInformation("starting usb task");
             await Task.Delay(1000, stoppingToken);
 
             byte i = 0;
@@ -94,7 +120,7 @@ namespace ROGStrixScopeRx.Library.Services
 
                 */
                
-                await Task.Delay(500, stoppingToken);
+                await Task.Delay(100, stoppingToken);
             }
         }
         public void NonBlockingConsumer(CancellationToken ct)
@@ -226,9 +252,14 @@ namespace ROGStrixScopeRx.Library.Services
             {
                 result = _device.ReadTimeout(65, 0).Length;
             }
-
+        }
+        private void AwaitResponses(int milliseconds)
+        {
+            byte[] buf = new byte[65];
+            var result = _device.ReadTimeout(65, milliseconds).Length;
 
         }
+
 
         public void Open()
         {
@@ -268,6 +299,7 @@ namespace ROGStrixScopeRx.Library.Services
 
         public void Write(RxMessageBase instruct)
         {
+            ClearResponses();
             _device.Write(instruct.OutBytes);
             var test2 = _device.Read(65);
         }
@@ -275,15 +307,14 @@ namespace ROGStrixScopeRx.Library.Services
         private void SetAll(InstructionSetAllLeds setallled)
         {
             RxMessageMultiLedFrame rx = new RxMessageMultiLedFrame(setallled.Ledlist);
-
+            
             for (int i = 0; i < RxMessageMultiLedFrame.Frames.Count; i++)
             {
+                ClearResponses();
                 _device.Write(RxMessageMultiLedFrame.Frames[i].OutBytes);
-
-
+                AwaitResponses(20);
             }
-            ClearResponses();
-
+            
 
         }
 

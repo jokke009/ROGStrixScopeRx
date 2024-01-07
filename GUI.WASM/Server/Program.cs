@@ -1,6 +1,10 @@
 using GUI.WASM.Server;
 using Microsoft.AspNetCore.ResponseCompression;
+using Microsoft.Extensions.DependencyInjection;
 using ROGStrixScopeRx.Library;
+using ROGStrixScopeRx.Library.Generators;
+using ROGStrixScopeRx.Library.Producers;
+using ROGStrixScopeRx.Library.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,8 +13,13 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 builder.Services.AddSignalR().AddMessagePackProtocol();
-builder.Services.AddSingleton<IDatapool, InternalDataPool>();
-builder.Services.AddHostedService<DataConsumer>();
+builder.Services.AddSingleton<IDatapool, InternalDataPool>()
+    .AddHostedService<DataConsumer>()
+    .AddHostedService<Randomizer>()
+
+    //  .AddHostedService<Flasher>()
+    .AddHostedService<USBService>().AddLogging()
+.AddHostedService<DataPoolWorker>();
 
 var app = builder.Build();
 
