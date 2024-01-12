@@ -24,7 +24,12 @@ namespace ROGStrixScopeRx.Library
             set;
         }
 
-        public int BandWidth
+        public int BandWidthIn
+        {
+            get;
+            set;
+        }
+        public int BandWidthOut
         {
             get;
             set;

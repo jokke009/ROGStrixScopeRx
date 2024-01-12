@@ -40,10 +40,30 @@ namespace ROGStrixScopeRx.Library.Services
         Device _device;
 
         private string _path = "";
+        private int _bandwidthIn = 0;
+        private int _bandwidthOut = 0;
+        private Timer _timer;
+        private int _bytesWrittenIn = 0;
+        private int _bytesWrittenOut = 0;
 
         bool ICommunicationService.State { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public int BandWidth { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public int BandWidthIn
+        {
+            get
+            {
+                return _bandwidthIn;
+            }
+            set { _bandwidthIn = value;}
+        }
 
+        public int BandWidthOut
+        {
+            get
+            {
+                return _bandwidthOut;
+            }
+            set { _bandwidthOut = value; }
+        }
         public record State
         {
             public bool IsConnected { get; set; }
@@ -90,7 +110,7 @@ namespace ROGStrixScopeRx.Library.Services
         protected async override Task ExecuteAsync(CancellationToken stoppingToken)
         {
             _state.IsConnected = true;
-
+            _timer = new Timer(CalculateBandwidth, null, TimeSpan.Zero, TimeSpan.FromSeconds(1));
 
 
             _logger.LogInformation("starting usb task");
@@ -138,7 +158,7 @@ namespace ROGStrixScopeRx.Library.Services
                     }
                     else
                     {
-                        _logger.LogInformation(" Take:{0}", nextItem);
+                        // _logger.LogInformation(" Take:{0}", nextItem);
                         Write(nextItem);
                     }
                 }
@@ -148,10 +168,17 @@ namespace ROGStrixScopeRx.Library.Services
                     _logger.LogInformation("Taking canceled.");
                     break;
                 }
+                finally
+                {
+                    if(_data.Bc.BoundedCapacity==_data.Bc.Count)
+                    {
+                        _logger.LogWarning("Buffer full!");
+                    }
+                }
 
                 // Slow down consumer just a little to cause
                 // collection to fill up faster, and lead to "AddBlocked"
-                Thread.Sleep(100);
+                Thread.Sleep(10);
             }
 
             _logger.LogInformation("\r\nNo more items to take.");
@@ -189,6 +216,13 @@ namespace ROGStrixScopeRx.Library.Services
             }
         }
 
+        private void CalculateBandwidth(object state)
+        {
+            BandWidthOut = _bytesWrittenOut;
+            string h = BandWidthOut.ToSize(Extensions.SizeUnits.KB);
+            _logger.LogInformation("BandWidthOut " + h);
+            _bytesWrittenOut = 0;
+        }
         private void SetLed(ScopeRx key, Color color)
         {
             if (_state.IsConnected)
@@ -214,7 +248,7 @@ namespace ROGStrixScopeRx.Library.Services
                 //_device.Write(test);
                 // var info =  Hid.Enumerate(0x0B05, 0x1951);
 
-                _device.Write(test);
+                this.Write(test.ToArray());
                 var test2 = _device.Read(65);
 
             }
@@ -293,15 +327,20 @@ namespace ROGStrixScopeRx.Library.Services
                         default: throw new NotImplementedException();
                 }
                 Write(rx);
-
             }
         }
 
         public void Write(RxMessageBase instruct)
         {
             ClearResponses();
-            _device.Write(instruct.OutBytes);
+            this.Write(instruct.OutBytes);
             var test2 = _device.Read(65);
+        }
+
+        private void Write(byte[] bytes)
+        {
+            _bytesWrittenOut += bytes.Length;
+            _device.Write(bytes);
         }
 
         private void SetAll(InstructionSetAllLeds setallled)
@@ -311,8 +350,8 @@ namespace ROGStrixScopeRx.Library.Services
             for (int i = 0; i < RxMessageMultiLedFrame.Frames.Count; i++)
             {
                 ClearResponses();
-                _device.Write(RxMessageMultiLedFrame.Frames[i].OutBytes);
-                AwaitResponses(20);
+                this.Write(RxMessageMultiLedFrame.Frames[i].OutBytes);
+                AwaitResponses(10);
             }
             
 

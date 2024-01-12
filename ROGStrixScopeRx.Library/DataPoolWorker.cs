@@ -13,7 +13,7 @@ namespace ROGStrixScopeRx.Library
     {
         private readonly IDatapool _pool;
 
-        static int _tickRate = 200;
+        static int _tickRate = 20;
         public static int TickRate { get => _tickRate; set => _tickRate = value; }
         public DataPoolWorker(IDatapool pool)
         {

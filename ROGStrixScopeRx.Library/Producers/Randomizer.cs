@@ -28,7 +28,7 @@ namespace ROGStrixScopeRx.Library.Producers
             while (!stoppingToken.IsCancellationRequested)
             {
                 RandomFrame();
-                await Task.Delay(1000);
+                await Task.Delay(20);
             }
         }
 

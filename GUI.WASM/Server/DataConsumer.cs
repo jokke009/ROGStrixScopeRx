@@ -14,7 +14,7 @@ namespace GUI.WASM.Server
         private readonly IDatapool _datapool;
         private readonly IHubContext<DataHub> _hub;
 
-        private readonly int _tickRate = 500;
+        private readonly int _tickRate = 50;
         public int TickRate => _tickRate;
         private KeyColor toggle = new KeyColor();
         public DataConsumer(ILogger<DataConsumer> logger, IHubContext<DataHub> hubContext, IDatapool datapool)
@@ -31,7 +31,7 @@ namespace GUI.WASM.Server
                 // _logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
                 if (_hub != null)
                 {
-                    _logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
+                   // _logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
                     // push block updates
                     //await _hub.Clients.All.SendAsync("DataMessage", 0x14, toggle);
                     // pick a random color from the system defined colors and assign it to toggle

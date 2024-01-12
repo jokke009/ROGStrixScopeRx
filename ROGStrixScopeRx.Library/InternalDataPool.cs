@@ -68,7 +68,7 @@ namespace ROGStrixScopeRx.Library
 
         private void Init()
         {
-            Bc = new BlockingCollection<InstructionBase>();
+            Bc = new BlockingCollection<InstructionBase>(100);
             Reporters = new ConcurrentDictionary<int, BaseReoprter>();
             Reporters.TryAdd(1, new VolumeReporter((byte)ScopeRx.KEY_EN_F12));
             Reporters.TryAdd(2, new VolumeReporter((byte)ScopeRx.KEY_EN_F11));
