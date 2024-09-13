@@ -36,6 +36,7 @@ builder.Services
       .AddHostedService<DataPoolWorker>()
       //.AddHostedService<Flasher>()
       .AddHostedService<VolumeService>()
+      //.AddHostedService<PerfmonService>()
       .AddHostedService<USBService>().AddLogging()
       //
      // .AddHostedService<PerfmonService>()
@@ -44,7 +45,11 @@ builder.Services
     // .AddHostedService<FadeService>().AddLogging()
     .Configure<AppSettings>(options => builder.Configuration.GetSection("Config").Bind(options));
 
-
+// Check if the environment is Windows
+if (OperatingSystem.IsWindows())
+{
+    builder.Services.AddHostedService<PerfmonService>();
+}
 builder.Logging.AddConsole();
 using IHost host = builder.Build(); 
 await host.RunAsync();

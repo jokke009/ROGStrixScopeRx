@@ -73,7 +73,21 @@ namespace ROGStrixScopeRx.Library
             Reporters.TryAdd(1, new VolumeReporter((byte)ScopeRx.KEY_EN_F12));
             Reporters.TryAdd(2, new VolumeReporter((byte)ScopeRx.KEY_EN_F11));
             Reporters.TryAdd(3, new LevelReporter((byte)ScopeRx.KEY_EN_F9));
-            Reporters.TryAdd(4, new CpuReporter((byte)ScopeRx.KEY_EN_F1));
+            Reporters.TryAdd(4, new CpuReporter((byte)ScopeRx.KEY_EN_NUMPAD_1));
+            Reporters.TryAdd(5, new CpuReporter((byte)ScopeRx.KEY_EN_NUMPAD_2));
+            Reporters.TryAdd(6, new CpuReporter((byte)ScopeRx.KEY_EN_NUMPAD_3));
+            Reporters.TryAdd(7, new CpuReporter((byte)ScopeRx.KEY_EN_NUMPAD_4));
+            Reporters.TryAdd(8, new CpuReporter((byte)ScopeRx.KEY_EN_NUMPAD_5));
+            Reporters.TryAdd(9, new CpuReporter((byte)ScopeRx.KEY_EN_NUMPAD_6));
+            Reporters.TryAdd(10, new CpuReporter((byte)ScopeRx.KEY_EN_NUMPAD_7));
+            Reporters.TryAdd(11, new CpuReporter((byte)ScopeRx.KEY_EN_NUMPAD_8));
+            Reporters.TryAdd(12, new CpuReporter((byte)ScopeRx.KEY_EN_NUMPAD_9));
+            Reporters.TryAdd(13, new CpuReporter((byte)ScopeRx.KEY_EN_NUMPAD_LOCK));
+            Reporters.TryAdd(14, new CpuReporter((byte)ScopeRx.KEY_EN_NUMPAD_DIVIDE));
+            Reporters.TryAdd(15, new CpuReporter((byte)ScopeRx.KEY_EN_NUMPAD_TIMES));
+
+
+
             globalIterator = 0;
         }
 

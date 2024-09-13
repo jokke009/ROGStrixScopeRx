@@ -108,7 +108,7 @@ namespace ROGStrixScop.Library.Windows.Producers
 
                 SampleLevel();
                 GetVolumeSetting();
-                await Task.Delay(200);
+                await Task.Delay(100);
 
             }
         }

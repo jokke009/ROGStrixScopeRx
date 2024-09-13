@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Hosting;
 using ROGStrixScopeRx.Library.Generics;
+using ROGStrixScopeRx.Library.Model;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -31,10 +32,21 @@ namespace ROGStrixScopeRx.Library
         {
             while (!stoppingToken.IsCancellationRequested)
             {
+                // todo add logic when to use individual commands vs send all as 1 frame
                 foreach (var rep in _pool.Reporters.Values.Where(x => x.HasUpdate == true))
                 {
-                    var col = rep.Get8BitValue();
-                    InstructionSetLed instr = new InstructionSetLed(rep.KeyBinding, Color.FromArgb(col, 255 - col, 0));
+                    InstructionSetLed instr;
+                    if (rep.GetType() == typeof(VolumeReporter) || rep.GetType() == typeof(LevelReporter))
+                    {
+                        var col = rep.Get8BitValue();
+                        instr = new InstructionSetLed(rep.KeyBinding, Color.FromArgb(col, 255 - col, 0));
+                    }
+                    else
+                    {
+                        var col = rep.GetVuColor();
+                        instr = new InstructionSetLed(rep.KeyBinding, col);
+                    }
+
                     QueueInstruction(instr);
                 }
 
