@@ -34,7 +34,8 @@ builder.Services
     //
       .AddSingleton<IDatapool, InternalDataPool>()
       .AddHostedService<DataPoolWorker>()
-      .AddHostedService<Flasher>()
+      //.AddHostedService<Flasher>()
+      .AddHostedService<VolumeService>()
       .AddHostedService<USBService>().AddLogging()
       //
      // .AddHostedService<PerfmonService>()

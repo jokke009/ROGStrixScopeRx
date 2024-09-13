@@ -12,6 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\ROGStrixScop.Library.Windows\ROGStrixScop.Library.Windows.csproj" />
     <ProjectReference Include="..\Client\GUI.WASM.Client.csproj" />
     <ProjectReference Include="..\Shared\GUI.WASM.Shared.csproj" />
   </ItemGroup>

@@ -12,6 +12,8 @@ using NAudio;
 using NAudio.CoreAudioApi;
 using ROGStrixScopeRx.Library.Generics;
 using ROGStrixScopeRx.Library.Model;
+using Microsoft.Extensions.Hosting;
+using System.Threading;
 
 namespace ROGStrixScop.Library.Windows.Producers
 {
@@ -19,7 +21,7 @@ namespace ROGStrixScop.Library.Windows.Producers
     /// <summary>
     /// Producer class
     /// </summary>
-    public class VolumeService :  IWinService 
+    public class VolumeService :  BackgroundService 
     {
 
         const int MAXPNAMELEN = 32;
@@ -99,7 +101,16 @@ namespace ROGStrixScop.Library.Windows.Producers
 
         }
 
+        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+        {
+            while (!stoppingToken.IsCancellationRequested)
+            {
 
+                SampleLevel();
+                GetVolumeSetting();
+                await Task.Delay(200);
 
+            }
+        }
     }
 }

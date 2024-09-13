@@ -1,8 +1,10 @@
 using GUI.WASM.Server;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.Extensions.DependencyInjection;
+using ROGStrixScop.Library.Windows.Producers;
 using ROGStrixScopeRx.Library;
 using ROGStrixScopeRx.Library.Generators;
+using ROGStrixScopeRx.Library.Model;
 using ROGStrixScopeRx.Library.Producers;
 using ROGStrixScopeRx.Library.Services;
 
@@ -16,6 +18,7 @@ builder.Services.AddSignalR().AddMessagePackProtocol();
 builder.Services.AddSingleton<IDatapool, InternalDataPool>()
     .AddHostedService<DataConsumer>()
     .AddHostedService<Randomizer>()
+   // .AddHostedService<VolumeService>()
 
     //  .AddHostedService<Flasher>()
     .AddHostedService<USBService>().AddLogging()
